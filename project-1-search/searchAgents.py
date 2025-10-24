@@ -477,8 +477,27 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    food_positions = foodGrid.asList()
+    
+    if not food_positions:
+        return 0
+    if len(food_positions) == 1:
+        return abs(position[0] - food_positions[0][0]) + abs(position[1] - food_positions[0][1])
+    
+    # Simple convex hull approximation: bounding box perimeter
+    min_x = min(food[0] for food in food_positions)
+    max_x = max(food[0] for food in food_positions)
+    min_y = min(food[1] for food in food_positions)
+    max_y = max(food[1] for food in food_positions)
+    
+    # Distance to closest corner + half the perimeter
+    corners = [(min_x, min_y), (min_x, max_y), (max_x, min_y), (max_x, max_y)]
+    min_corner_distance = min(abs(position[0] - corner[0]) + abs(position[1] - corner[1])
+                             for corner in corners)
+    
+    perimeter = 2 * ((max_x - min_x) + (max_y - min_y))
+    
+    return min_corner_distance + perimeter // 2
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
