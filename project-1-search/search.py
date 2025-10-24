@@ -78,16 +78,43 @@ def depthFirstSearch(problem: SearchProblem):
 
     Your search algorithm needs to return a list of actions that reaches the
     goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Initialize the search_space with the start state
+    # The search_space in DFS is a Stack (LIFO)
+    search_space = util.Stack()
+    
+    # Keep track of visited states to avoid cycles
+    visited = set()
+    
+    # Push the initial state with an empty action list
+    start_state = problem.getStartState()
+    search_space.push((start_state, []))  # (state, actions_to_reach_state)
+    
+    while not search_space.isEmpty():
+        # Pop the deepest node from the stack
+        current_state, actions = search_space.pop()
+        
+        # Check if we've reached the goal
+        if problem.isGoalState(current_state):
+            return actions
+        
+        # Skip if we've already visited this state
+        if current_state in visited:
+            continue
+        
+        # Mark the current state as visited
+        visited.add(current_state)
+        
+        # Get all possible successor states and actions
+        for successor, action, step_cost in problem.getSuccessors(current_state):
+            if successor not in visited:
+                # For each unvisited successor, add it to the search_space
+                # with the updated list of actions
+                new_actions = actions + [action]
+                search_space.push((successor, new_actions))
+    
+    # If no solution is found
+    return []
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
