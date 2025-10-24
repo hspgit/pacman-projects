@@ -204,8 +204,51 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Initialize the search space with the start state
+    # In A*, we use a PriorityQueue where priority is f(n) = g(n) + h(n)
+    # g(n) is the path cost so far, h(n) is the heuristic estimate to goal
+    search_space = util.PriorityQueue()
+    
+    # Keep track of visited states to avoid cycles
+    visited = set()
+    
+    # Push the initial state with an empty action list and zero cost
+    start_state = problem.getStartState()
+    # Calculate initial f(n) = g(n) + h(n) where g(n)=0 for start state
+    start_heuristic = heuristic(start_state, problem)
+    search_space.push((start_state, [], 0), 0 + start_heuristic)  # (state, actions, g_cost), priority=f_cost
+    
+    while not search_space.isEmpty():
+        # Pop the node with lowest f(n) = g(n) + h(n)
+        current_state, actions, g_cost = search_space.pop()
+        
+        # Check if we've reached the goal
+        if problem.isGoalState(current_state):
+            return actions
+        
+        # Skip if we've already visited this state
+        if current_state in visited:
+            continue
+        
+        # Mark the current state as visited
+        visited.add(current_state)
+        
+        # Get all possible successor states, actions, and costs
+        for successor, action, step_cost in problem.getSuccessors(current_state):
+            if successor not in visited:
+                # Calculate new g(n) - the cost so far
+                new_g_cost = g_cost + step_cost
+                # Calculate h(n) - the heuristic estimate to goal
+                h_cost = heuristic(successor, problem)
+                # Calculate f(n) = g(n) + h(n)
+                f_cost = new_g_cost + h_cost
+                # Create updated actions list
+                new_actions = actions + [action]
+                # Add to search_space with priority = f_cost
+                search_space.push((successor, new_actions, new_g_cost), f_cost)
+    
+    # If no solution is found
+    return []
 
 
 # Abbreviations
