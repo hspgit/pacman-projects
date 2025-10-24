@@ -357,6 +357,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+# Implement a non-trivial, consistent heuristic for the CornersProblem in cornersHeuristic.
 def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     A heuristic for the CornersProblem that you defined.
