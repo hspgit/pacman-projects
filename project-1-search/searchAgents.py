@@ -527,8 +527,33 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Custom BFS implementation - finds closest food by number of steps
+        from util import Queue
+        
+        frontier = Queue()
+        frontier.push((problem.getStartState(), []))  # (state, path)
+        explored = set()
+        
+        while not frontier.isEmpty():
+            state, path = frontier.pop()
+            
+            # Check if we found food
+            if problem.isGoalState(state):
+                return path
+            
+            # Skip if already explored
+            if state in explored:
+                continue
+            explored.add(state)
+            
+            # Expand successors
+            for successor, action, stepCost in problem.getSuccessors(state):
+                if successor not in explored:
+                    newPath = path + [action]
+                    frontier.push((successor, newPath))
+        
+        # No solution found
+        return []
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -564,7 +589,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.food[x][y]
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """
