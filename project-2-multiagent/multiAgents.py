@@ -214,7 +214,71 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def getMaxValue(gameState, depth, alpha, beta):
+            # Base cases: terminal state or maximum depth reached
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            
+            maxValue = float('-inf')
+            for action in gameState.getLegalActions(0):
+                successor = gameState.generateSuccessor(0, action)
+                # Next agent is ghost (agent 1)
+                value = getMinValue(successor, depth, 1, alpha, beta)
+                maxValue = max(maxValue, value)
+                
+                # Alpha-beta pruning
+                if maxValue > beta:
+                    return maxValue
+                alpha = max(alpha, maxValue)
+            return maxValue
+        
+        def getMinValue(gameState, depth, agentIndex, alpha, beta):
+            # Base cases: terminal state or maximum depth reached
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            
+            # Get number of agents
+            numAgents = gameState.getNumAgents()
+            
+            minValue = float('inf')
+            for action in gameState.getLegalActions(agentIndex):
+                successor = gameState.generateSuccessor(agentIndex, action)
+                
+                # Check if this is the last ghost
+                if agentIndex == numAgents - 1:
+                    # All ghosts have moved, go back to Pacman and decrease depth
+                    value = getMaxValue(successor, depth - 1, alpha, beta)
+                else:
+                    # Move to next ghost
+                    value = getMinValue(successor, depth, agentIndex + 1, alpha, beta)
+                
+                minValue = min(minValue, value)
+                
+                # Alpha-beta pruning
+                if minValue < alpha:
+                    return minValue
+                beta = min(beta, minValue)
+            return minValue
+        
+        # Find the best action for Pacman
+        bestAction = None
+        bestValue = float('-inf')
+        alpha = float('-inf')
+        beta = float('inf')
+        
+        for action in gameState.getLegalActions(0):
+            successor = gameState.generateSuccessor(0, action)
+            # Start with ghost agent 1 at full depth
+            value = getMinValue(successor, self.depth, 1, alpha, beta)
+            
+            if value > bestValue:
+                bestValue = value
+                bestAction = action
+            
+            # Update alpha for root level
+            alpha = max(alpha, value)
+        
+        return bestAction
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
