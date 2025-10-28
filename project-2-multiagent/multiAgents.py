@@ -293,7 +293,63 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def getMaxValue(gameState, depth):
+            # Base cases: terminal state or maximum depth reached
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            
+            maxValue = float('-inf')
+            for action in gameState.getLegalActions(0):
+                successor = gameState.generateSuccessor(0, action)
+                # Next agent is ghost (agent 1)
+                value = getExpValue(successor, depth, 1)
+                maxValue = max(maxValue, value)
+            return maxValue
+        
+        def getExpValue(gameState, depth, agentIndex):
+            # Base cases: terminal state or maximum depth reached
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            
+            # Get number of agents
+            numAgents = gameState.getNumAgents()
+            
+            # Calculate expected value based on uniform random choice
+            legalActions = gameState.getLegalActions(agentIndex)
+            if not legalActions:
+                return self.evaluationFunction(gameState)
+            
+            expectedValue = 0.0
+            for action in legalActions:
+                successor = gameState.generateSuccessor(agentIndex, action)
+                
+                # Check if this is the last ghost
+                if agentIndex == numAgents - 1:
+                    # All ghosts have moved, go back to Pacman and decrease depth
+                    value = getMaxValue(successor, depth - 1)
+                else:
+                    # Move to next ghost
+                    value = getExpValue(successor, depth, agentIndex + 1)
+                
+                expectedValue += value
+            
+            # Return average value (uniform probability)
+            return expectedValue / len(legalActions)
+        
+        # Find the best action for Pacman
+        bestAction = None
+        bestValue = float('-inf')
+        
+        for action in gameState.getLegalActions(0):
+            successor = gameState.generateSuccessor(0, action)
+            # Start with ghost agent 1 at full depth
+            value = getExpValue(successor, self.depth, 1)
+            
+            if value > bestValue:
+                bestValue = value
+                bestAction = action
+        
+        return bestAction
 
 def betterEvaluationFunction(currentGameState: GameState):
     """
