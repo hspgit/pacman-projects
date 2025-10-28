@@ -356,10 +356,82 @@ def betterEvaluationFunction(currentGameState: GameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: This evaluation function combines multiple strategic factors:
+    1. Base game score as foundation
+    2. Food distance incentives with diminishing returns
+    3. Ghost avoidance with distance-based penalties
+    4. Scared ghost hunting bonuses
+    5. Capsule collection incentives
+    6. Food count penalties to drive completion
+    7. Winning/losing state bonuses/penalties
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    # Base score from the game
+    score = currentGameState.getScore()
+    
+    # Get game state information
+    pacmanPos = currentGameState.getPacmanPosition()
+    food = currentGameState.getFood()
+    foodList = food.asList()
+    ghostStates = currentGameState.getGhostStates()
+    scaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
+    capsules = currentGameState.getCapsules()
+    
+    # Factor 1: Food distance - encourage moving toward closest food
+    if foodList:
+        foodDistances = [manhattanDistance(pacmanPos, food) for food in foodList]
+        closestFoodDist = min(foodDistances)
+        score += 10.0 / (closestFoodDist + 1)
+        
+        # Moderate bonus for being close to food
+        if closestFoodDist == 0:
+            score += 200
+        elif closestFoodDist == 1:
+            score += 50
+    
+    # Factor 2: Food count - penalize remaining food but not too harshly
+    remainingFood = len(foodList)
+    score -= remainingFood * 50
+
+     # Factor 3: Encourage completion - bonus for fewer remaining food
+    if remainingFood <= 5:
+        score += (5 - remainingFood) * 50
+    
+    # Factor 4: Ghost handling - more conservative approach
+    for i, ghostState in enumerate(ghostStates):
+        ghostPos = ghostState.getPosition()
+        ghostDist = manhattanDistance(pacmanPos, ghostPos)
+        
+        if scaredTimes[i] > 0:
+            # Ghost is scared - encourage hunting but be careful
+            if ghostDist > 0:
+                score += 150.0 / ghostDist
+            # Bonus for eating scared ghosts
+            if ghostDist <= 1:
+                score += 300
+        else:
+            # Ghost is dangerous - very conservative avoidance
+            if ghostDist <= 1:
+                score -= 5000  # Massive penalty for immediate danger
+            elif ghostDist == 2:
+                score -= 500   # Strong penalty for close danger
+            elif ghostDist == 3:
+                score -= 100   # Moderate penalty for nearby ghosts
+            elif ghostDist <= 4:
+                score -= 20    # Small penalty for moderate distance
+    
+    # Factor 5: Capsules - encourage collecting power pellets
+    if capsules:
+        capsuleDistances = [manhattanDistance(pacmanPos, capsule) for capsule in capsules]
+        closestCapsuleDist = min(capsuleDistances)
+        score += 50.0 / (closestCapsuleDist + 1)
+        
+        # Bonus for being next to capsule
+        if closestCapsuleDist <= 1:
+            score += 150
+    
+    return score
 
 # Abbreviation
 better = betterEvaluationFunction
