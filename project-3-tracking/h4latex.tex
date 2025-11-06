@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+
+% ------- packages -------
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{xurl} 
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
+}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, frame=single, breaklines=true}
+
+% ------- metadata (edit these) -------
+\newcommand{\course}{CS5100 Foundations of Artificial Intelligence}
+\newcommand{\assignment}{Pac-Man Programming Project 3}
+\newcommand{\subtitle}{Reflection PDF (5 points)}
+\newcommand{\deadline}{Tuesday, October 28\textsuperscript{th}, 11:59\,PM Eastern}
+\newcommand{\studentA}{Hrishikesh Pradhan}
+\newcommand{\sidA}{002322065}
+\newcommand{\emailA}{pradhan.@northeastern.edu}
+\newcommand{\studentB}{Partner Name (if any)}
+\newcommand{\sidB}{Partner NUID}
+\newcommand{\emailB}{partner@northeastern.edu}
+% -------------------------------------
+
+\title{\assignment\\\large \subtitle}
+\author{\studentA\ (\sidA, \texttt{\emailA})\\[0.25em]}
+\date{\course\\\normalsize Deadline: \deadline}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Project page:} \url{https://inst.eecs.berkeley.edu/~cs188/su24/projects/proj3/}
+
+\section*{Programming Project Collaboration Policy}
+You may work on this Programming Project on your own or with one partner (this is up to you). If you work with a partner, you and your partner may submit identical code. That being said, you must both have significantly contributed to the writing of this code and then must answer the below question about your individual contributions. Due to the ability to split work and share code, collaboration is limited to a single other person. Other course policy for homework (such as those for online resources and AI use) must still be followed. Any citations can be placed at the start or end of the reflection. The Berkeley cite where the project is hosted does not require citation.
+
+\section*{Submission instructions}
+Submit this PDF on Gradescope under \textbf{Programming Project 3: Ghostbusters (PDF)}. 
+% If you worked with a partner, both of you should upload the same PDF.
+
+\section{Team contribution (only if you worked with a partner)}
+Briefly describe each partner's contributions (design, coding, debugging, testing, write-up). If you worked alone, you may delete this section.
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{\studentA:} \emph{Completed the project.}
+  % \item \textbf{\studentB:} \emph{e.g., implemented minimax/alpha-beta, profiling, drafted Section~\ref{sec:difficulty}.}
+\end{itemize}
+
+\newpage
+
+\section{Difficulty reflection}\label{sec:difficulty}
+\textbf{What was the question that gave you the most difficulty and what was the question that gave you the least difficulty?}
+Provide a short explanation for each. (Example from the prompt: Q2 was most challenging; Q3 and Q4 were straightforward after finishing Q2.) \\
+\noindent\textbf{Answer: }Question 1 was the easiest because the only instruction was to represent the image of Bayes net in python program. \\
+Q2, Q3 and Q4 were difficult because I kept missing edge cases and used list instead of set initially.
+
+\vspace{1cm}
+
+\section{Question 2: Join Factor's Behavior}\label{sec:q1eval}
+\textbf{Complete the claim below by replacing the ``(???)" with the required explanation.} 
+\\
+\\
+joinfactor can be described as taking $n$ conditional probabilities as input and producing a single conditional probability where the output has $X$ left of the conditional iff at least one of the inputs had $X$ left of the conditional. Further, the output has $Y$ right of the conditional iff at least one of the inputs had $Y$ right of the conditional unless (???).
+
+\vspace{1cm}
+
+\section{Question 7: Bayes Net Size}\label{sec:q1eval}
+\textbf{If we were to increase the number of ghosts, which types of nodes would would have an increased number of outgoing edges? Which would not?\#1?} Explain why each of these types of nodes are effected/not effected by the addition of new ghosts.
+
+\vspace{1cm}
+
+\section{Question 8: Updated Visualization}\label{sec:q1eval}
+\textbf{Which squares had the greatest change in color post question 7 to post question 8?} In the prior question, you were asked to ``explain why some squares get lighter and some squares get darker." Run your updated code after completing question 8 with graphics and compare this to results just prior to completing question 8. Which squares had the greatest change in color? Where did your estimations change the most with the update from question 7 to 8? Does this help provide better intuition how this update improved your algorithm?
+
+\end{document}
