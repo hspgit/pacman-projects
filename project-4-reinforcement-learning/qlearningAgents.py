@@ -15,15 +15,9 @@
 from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
-from backend import ReplayMemory
-
-import backend
-import gridworld
 
 
 import random,util,math
-import numpy as np
-import copy
 
 class QLearningAgent(ReinforcementAgent):
     """
@@ -195,14 +189,25 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        features = self.featExtractor.getFeatures(state, action)
+        qValue = 0.0
+        for feature, value in features.items():
+            qValue += self.weights[feature] * value
+        return qValue
 
     def update(self, state, action, nextState, reward: float):
         """
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        features = self.featExtractor.getFeatures(state, action)
+        currentQ = self.getQValue(state, action)
+        maxNextQ = self.computeValueFromQValues(nextState)
+        difference = (reward + self.discount * maxNextQ) - currentQ
+        
+        # Update each weight: w_i = w_i + α * difference * f_i(s,a)
+        for feature, value in features.items():
+            self.weights[feature] += self.alpha * difference * value
 
     def final(self, state):
         """Called at the end of each game."""
